@@ -30,3 +30,4 @@ bin/
 
 ### Individual ###
 .idea/
+src/io/kweakkweak/bufferedimageutils/Main.java
