@@ -76,6 +76,29 @@ public final class BufferedImageUtils {
     return image;
   }
 
+  public static BufferedImage pixelize(BufferedImage sourceImage, int requiredWidth, int requiredHeight) {
+    if (sourceImage.getWidth() < requiredWidth)
+      throw new IllegalArgumentException("Required width must be lower than width of source image");
+    else if (sourceImage.getHeight() < requiredHeight)
+      throw new IllegalArgumentException("Required height must be lower than height of source image");
+    else if (requiredHeight <= 0 || requiredWidth <= 0)
+      throw new IllegalArgumentException("Arguments must be fewer than zero");
+
+    float xStep = sourceImage.getWidth() / requiredWidth;
+    float yStep = sourceImage.getHeight() / requiredHeight;
+
+    BufferedImage image = new BufferedImage((int) (sourceImage.getWidth() / xStep), (int) (sourceImage.getHeight() / yStep), sourceImage.getType());
+
+    // Pixelize image
+    for (int imageX = 0; imageX < image.getWidth(); imageX++) {
+      for (int imageY = 0; imageY < image.getHeight(); imageY++) {
+        image.setRGB(imageX, imageY, sourceImage.getRGB(imageX * (int) xStep, imageY * (int) yStep));
+      }
+    }
+
+    return image;
+  }
+
   public static BufferedImage[] spread(BufferedImage sourceImage, int toX, int toY) {
     // TODO: Make a massive of massives with rows and columns
     int maxX = sourceImage.getWidth() / toX;
