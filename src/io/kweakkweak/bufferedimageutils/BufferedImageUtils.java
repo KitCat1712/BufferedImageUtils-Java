@@ -58,18 +58,18 @@ public final class BufferedImageUtils {
     return image;
   }
 
-  public static BufferedImage pixelize(BufferedImage sourceImage, int level) {
-    if (sourceImage.getWidth() < level || sourceImage.getHeight() < level)
-      throw new IllegalArgumentException("Level must be lower than width and height of image");
-    else if (level <= 0)
-      throw new IllegalArgumentException("Level must be fewer than zero");
+  public static BufferedImage pixelize(BufferedImage sourceImage, float step) {
+    if (sourceImage.getWidth() < step || sourceImage.getHeight() < step)
+      throw new IllegalArgumentException("Step must be lower than width and height of image");
+    else if (step <= 0)
+      throw new IllegalArgumentException("Step must be fewer than zero");
 
-    BufferedImage image = new BufferedImage(sourceImage.getWidth() / level, sourceImage.getHeight() / level, sourceImage.getType());
+    BufferedImage image = new BufferedImage((int) (sourceImage.getWidth() / step), (int) (sourceImage.getHeight() / step), sourceImage.getType());
 
     // Pixelize image
     for (int imageX = 0; imageX < image.getWidth(); imageX++) {
       for (int imageY = 0; imageY < image.getHeight(); imageY++) {
-        image.setRGB(imageX, imageY, sourceImage.getRGB(imageX * level, imageY * level));
+        image.setRGB(imageX, imageY, sourceImage.getRGB(imageX * (int) step, imageY * (int) step));
       }
     }
 
@@ -117,7 +117,7 @@ public final class BufferedImageUtils {
   }
 
   public static BufferedImage toWaves(BufferedImage sourceImage, int parts) {
-    BufferedImage image = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), sourceImage.getType());
+    BufferedImage image = new BufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 
     for (byte part = 1; part < parts; part++) {
       for (int x = 0; x < image.getWidth(); x++) {
@@ -130,7 +130,7 @@ public final class BufferedImageUtils {
         }
 
         OptionalDouble average = Arrays.stream(pixels).average();
-        int func = (int) (((sourceImage.getHeight() / parts) * part) + (Math.round(Math.sin(0.5 * x) * (average.getAsDouble() / (0xFFFFFF / 10)))));
+        int func = (int) (((sourceImage.getHeight() / parts) * part) + (Math.round(Math.sin(/*0.5 * */x) * (average.getAsDouble() / (0xFFFFFF / 10)))));
 
         // Где 0.5, вполне рабочий коэффициент растажения вдоль оси x
 
